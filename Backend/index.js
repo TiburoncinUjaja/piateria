@@ -4,6 +4,7 @@ import conectarDB from "./config/db.js";
 import usuarioRoutes from "./routes/usuarioRoutes.js"
 import productoRoutes from "./routes/productoRoutes.js"
 import path from "path";
+import cors from 'cors';
 
 const app = express()
 
@@ -14,6 +15,9 @@ conectarDB();
 
 //Confiurar CORS
 
+app.use(cors({
+  origin: 'http://localhost:5173' // Asegúrate de que este sea el puerto correcto de tu frontend
+}));
 
 // Routing
 
