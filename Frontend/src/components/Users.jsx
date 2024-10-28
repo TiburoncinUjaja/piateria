@@ -41,6 +41,9 @@ const Users = () => {
                 <a href="#" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Mi perfil</a>
               </li>
               <li>
+                <Link to="/admin" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Ir a Admin</Link>
+              </li>
+              <li>
                 <button onClick={handleLogout} className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left">Cerrar sesión</button>
               </li>
             </ul>
