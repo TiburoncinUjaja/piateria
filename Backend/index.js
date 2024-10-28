@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import conectarDB from "./config/db.js";
 import usuarioRoutes from "./routes/usuarioRoutes.js"
 import productoRoutes from "./routes/productoRoutes.js"
+import path from "path";
 
 const app = express()
 
@@ -18,7 +19,7 @@ conectarDB();
 
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/productos", productoRoutes);
-
+app.use('/uploads/images', express.static(path.join(path.resolve(), 'uploads/images')));
 
 const PORT = process.env.PPORT || 4000;
 
