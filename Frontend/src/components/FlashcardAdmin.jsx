@@ -10,7 +10,7 @@ const FlashcardAdmin = () => {
   const [productCategory, setProductCategory] = useState("");
   const [productState, setProductState] = useState("");
   const [productPrice, setProductPrice] = useState("");
-  
+
 
   // Función para alternar el formulario
   const toggleForm = () => {
@@ -29,20 +29,46 @@ const FlashcardAdmin = () => {
     formData.append("codigo", productCode);
     formData.append("nombre", productName);
     formData.append("precio", productPrice);
-    formData.append("imagen", "../Backend/img new products/coso.jpg");
     formData.append("descripcion", productDescription);
     formData.append("categoria", productCategory);
-    formData.append("estado", productState);   
-
+    formData.append("estado", productState);
+    const productoData = {"codigo":productCode, 
+      "nombre":productName, "descripcion":productDescription, 
+      "categoria":productCategory, "precio":productPrice, 
+      "estado":productState === 'activo' };
+    const imageData = new FormData();
+    imageData.append("image", productImage);
 
     try {
-      const response = await fetch("http://localhost:4000/api/productos/upload", {
-        method: "POST",
-        body: formData,
+      const response = await fetch('http://localhost:4000/api/productos/upload', {
+        method: 'POST',
+        body: imageData,
+        headers: {
+          // Es importante NO incluir 'Content-Type', fetch lo establecerá automáticamente para multipart/form-data
+        }
       });
+      if (!response.ok) {
+        throw new Error("Error en la respuesta del servidor");
+      }
       const data = await response.json();
       console.log("Imagen guardada en:", data.filePath);
       // Aquí puedes usar la URL recibida en `data.filePath` o guardarla en tu base de datos
+      formData.append("imagen", data.filePath);
+      productoData.imagen = data.filePath;
+      // Para depurar y ver los valores en el formData
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+      console.log(JSON.stringify(productoData));
+      const res = await fetch('http://localhost:4000/api/productos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(productoData),
+      });
+      const productoAlmacenado = await res.json();
+      console.log('Producto registrado:', productoAlmacenado);
 
       // Limpia el formulario después de enviar
       setProductCode("");
@@ -56,6 +82,15 @@ const FlashcardAdmin = () => {
     } catch (error) {
       console.error("Error al subir la imagen:", error);
     }
+  };
+  const handleCategoryChange = (e) => {
+    setProductCategory(e.target.value);
+    console.log("Categoría seleccionada:", e.target.value);
+  };
+
+  const handleStateChange = (e) => {
+    setProductState(e.target.value);
+    console.log("Estado seleccionado:", e.target.value);
   };
 
   return (
@@ -93,7 +128,7 @@ const FlashcardAdmin = () => {
                     required
                   />
                 </div>
-                
+
                 <div className="mb-4">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Nombre del Producto
@@ -140,22 +175,26 @@ const FlashcardAdmin = () => {
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Categoría del Producto
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={productCategory}
-                    onChange={(e) => setProductCategory(e.target.value)}
+                    onChange={handleCategoryChange}
                     className="w-full px-3 py-2 border rounded"
-                    placeholder="Categoría del producto"
                     required
-                  />
+                  >
+                    <option value="piatas">Piñatas</option>
+                    <option value="inflables">Inflables</option>
+                    <option value="juguetes">Juguetes</option>
+                    <option value="decoracion">Decoración</option>
+                    <option value="otros">Otros</option>
+                  </select>
                 </div>
                 <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
                     Estado del Producto
                   </label>
                   <select
                     value={productState}
-                    onChange={(e) => setProductState(e.target.value)}
+                    onChange={handleStateChange}
                     className="w-full px-3 py-2 border rounded"
                     required
                   >
@@ -164,7 +203,7 @@ const FlashcardAdmin = () => {
                   </select>
                 </div>
                 <div>
-                  
+
                 </div>
                 <div className="mb-4 col-span-2">
                   <label className="block text-gray-700 text-sm font-bold mb-2">

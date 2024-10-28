@@ -15,6 +15,9 @@ conectarDB();
 
 //Confiurar CORS
 
+// Middleware para analizar JSON y datos URL encoded
+app.use(express.urlencoded({ extended: true }));
+
 app.use(cors({
   origin: 'http://localhost:5173' // Asegúrate de que este sea el puerto correcto de tu frontend
 }));
