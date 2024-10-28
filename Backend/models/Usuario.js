@@ -27,6 +27,11 @@ const usuarioSchema = mongoose.Schema({
         trim: true,
         unique: true
     },
+    rol: {
+        type: String,
+        required: true,
+        trim: true,
+    },
     token: {
         type: String
     },
