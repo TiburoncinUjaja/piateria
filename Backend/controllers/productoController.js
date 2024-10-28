@@ -19,4 +19,21 @@ const registrar = async (req, res) => {
     }
 }
 
-export {registrar}
+export const upload = (req, res) => {
+    if (!req.file) {
+      return res.status(400).send("No se ha subido ninguna imagen");
+    }
+    res.send({
+      message: "Imagen subida exitosamente",
+      filePath: `/uploads/images/${req.file.filename}`
+    });
+  };
+
+const obtenerProductos = async (req, res) => {
+    const productos = await Producto.find({
+        nombre: { $regex: req.nombre, $options: 'i' } 
+    });
+    res.json(productos);
+}
+
+export {registrar, obtenerProductos}
