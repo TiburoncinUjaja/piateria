@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import conectarDB from "./config/db.js";
 import usuarioRoutes from "./routes/usuarioRoutes.js"
 import productoRoutes from "./routes/productoRoutes.js"
+import pqrRoutes from "./routes/pqrRoutes.js"
 import path from "path";
 import cors from 'cors';
 
@@ -26,6 +27,7 @@ app.use(cors({
 
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/productos", productoRoutes);
+app.use("/api/pqrs", pqrRoutes);
 app.use('/uploads/images', express.static(path.join(path.resolve(), 'uploads/images')));
 
 const PORT = process.env.PPORT || 4000;
