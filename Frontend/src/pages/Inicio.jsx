@@ -1,12 +1,13 @@
 import React from 'react'
-import Flashcard from '../components/Flashcard'
+import FlashcardPage from '../components/Flashcard'
 import Carousel from '../components/Carousel'
 
-const Inicio = () => {
+const Inicio = ({searchTerm}) => {
+  //console.log(searchTerm);
   return (
     <div>
       <Carousel/>
-      <Flashcard/>
+      <FlashcardPage searchTerm={searchTerm}/>
     </div>
   )
 }

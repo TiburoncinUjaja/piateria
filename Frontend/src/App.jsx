@@ -12,14 +12,15 @@ import PageAPI from "./pages/PageAPI";
 
 function App() {
   const [count, setCount] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
   return (
     <>
       <div className="bg-gradient-to-b from-gray-50 to-gray-200 min-h-screen">
-        <Header></Header>
+        <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} ></Header>
 
         <section className="w-5/6 mx-auto px-8 pt-10">
           <Routes>
-            <Route path="/" element={<Inicio></Inicio>}></Route>
+            <Route path="/" element={<Inicio searchTerm={searchTerm}></Inicio>}></Route>
             <Route path="/Admin" element={<Admin></Admin>}></Route>
             <Route path="/SobreNosotros" element={<AboutUs></AboutUs>}></Route>
             <Route path="/contactenos" element={<Contact></Contact>}></Route>

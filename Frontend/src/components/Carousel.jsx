@@ -7,7 +7,7 @@ import CarouselImg3 from '../img/CarouselImg3.jpg'
 
 const Carousel1 = () => {
     const imgStyle = {
-        height: '500px',
+        height: '400px',
         objectFit: 'cover' 
       };
   return (

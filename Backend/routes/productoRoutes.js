@@ -1,11 +1,15 @@
 import express from "express";
 const router = express.Router();
-import { registrar, upload, obtenerProductos } from "../controllers/productoController.js";
+import { registrar, upload, obtenerProductos, obtenerProducto, editarProducto, eliminarProducto } from "../controllers/productoController.js";
 import { upload as multerUpload } from "../controllers/upload.js";
 
 router.post("/", registrar);
 router.post("/upload", multerUpload, upload);
-router.get("/", obtenerProductos);
+router.get("/listar/:nombre", obtenerProductos);
+router.route("/:id")
+    .get(obtenerProducto)
+    .put(editarProducto)
+    .delete(eliminarProducto);
 
 
 export default router

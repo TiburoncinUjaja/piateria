@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect,useState } from "react";
 import Globos from "../img/globosRojos.jpg";
 
 const FlashcardAdmin = () => {
@@ -11,6 +11,53 @@ const FlashcardAdmin = () => {
   const [productState, setProductState] = useState("");
   const [productPrice, setProductPrice] = useState("");
 
+  const [pqrs, setPqrs] = useState([]);
+
+  // Función para obtener los PQRs
+  const fetchPqrs = async () => {
+    try {
+        const response = await fetch('http://localhost:4000/api/pqrs/obtener');
+        if (!response.ok) {
+            throw new Error("Error al obtener los PQRs");
+        }
+        const data = await response.json();
+        console.log("Datos de PQRs recibidos:", data); // Muestra la estructura de `data` en la consola
+        
+        // Asegúrate de que data.pqrs existe y es un array antes de llamar a setPqrs
+        if (data && Array.isArray(data.pqrs)) {
+            setPqrs(data.pqrs);
+        } else {
+            console.warn("La respuesta no contiene un array 'pqrs' como se esperaba:", data);
+        }
+    } catch (error) {
+        console.error("Error al cargar los PQRs:", error);
+    }
+};
+
+useEffect(() => {
+    fetchPqrs();
+}, []);
+
+const handleEstadoChange = async (id, nuevoEstado) => {
+  try {
+      const response = await fetch(`http://localhost:4000/api/pqrs/estado/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ estado: nuevoEstado })
+      });
+
+      if (response.ok) {
+          const data = await response.json();
+          setPqrs(prevPqrs => prevPqrs.map(pqr => 
+              pqr._id === id ? { ...pqr, estado: nuevoEstado } : pqr
+          ));
+      } else {
+          console.error("Error al actualizar el estado del PQR");
+      }
+  } catch (error) {
+      console.error("Error:", error);
+  }
+};
 
   // Función para alternar el formulario
   const toggleForm = () => {
@@ -259,7 +306,42 @@ const FlashcardAdmin = () => {
           {/* Añade más productos aquí */}
         </div>
       </div>
+
+       {/* Ver los PQRs Esta feo pero despues lo arreglo */}
+       <div className="bg-Azul-oscuro rounded">
+       <div className="container mx-auto py-10">
+        <h2 className="text-2xl font-bold mb-4 text-Azul-oscuro">Lista de PQRs</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {pqrs.length > 0 ? (
+            pqrs.map((pqr) => (
+                <div key={pqr.serial} className="p-4 bg-slate-200 rounded-lg shadow-md">
+                    <h3 className="text-lg font-semibold">{pqr.asunto}</h3>
+                    <p><strong>Email:</strong> {pqr.email}</p>
+                    <p><strong>Mensaje:</strong> {pqr.mensaje}</p>
+                    <p><strong>Fecha:</strong> {pqr.fecha}</p>
+                    <p><strong>Estado:</strong> {pqr.estado}</p>
+
+                    <select
+                        value={pqr.estado}
+                        onChange={(e) => handleEstadoChange(pqr._id, e.target.value)}
+                        className="w-full mt-2 px-2 py-1 border rounded"
+                    >
+                        <option value="no visto">No visto</option>
+                        <option value="en revisión">En revisión</option>
+                        <option value="resuelto">Resuelto</option>
+                    </select>
+                </div>
+            ))
+            ) : (
+                <p>No hay PQRs disponibles.</p>
+            )}
+        </div>
+</div>
+        </div>
     </section>
+
+
+
   );
 };
 

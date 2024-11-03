@@ -1,10 +1,9 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
 import logo from "../img/logo.png";
 import Users from "./Users";
-import { useState, useEffect } from "react";
 
-const Header = () => {
+const Header = ({searchTerm, setSearchTerm }) => {
   const [sesionActiva, setSesionActiva] = useState(false);
   const [nombreUsuario, setNombreUsuario] = useState("");
 
@@ -19,6 +18,11 @@ const Header = () => {
       setNombreUsuario("");
     }
   }, []);
+
+  const handleSearchTermChange = e =>{
+    setSearchTerm(e.target.value);
+  }
+
   const btnLink =
     "mr-5 px-5 py-5 hover:text-Azul-oscuro hover:border-b-2 border-Azul-oscuro cursor-pointer";
   const btnActive =
@@ -67,6 +71,7 @@ const Header = () => {
               id="default-search"
               className="block w-full p-4 ps-10 text-sm text-gray-900 border border-Azul-oscuro rounded-lg bg-gray-50 focus:border-Azul-oscuro"
               placeholder="Busca globos, decoraciones..."
+              onChange={handleSearchTermChange}
               required
             />
             <button

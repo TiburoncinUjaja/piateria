@@ -25,15 +25,16 @@ export const upload = (req, res) => {
     }
     res.send({
         message: "Imagen subida exitosamente",
-        filePath: `/uploads/images/${req.file.filename}`
+        filePath: `${req.file.filename}`
     });
 };
 
 const obtenerProductos = async (req, res) => {
-    const { nombre } = req.body;
+    const { nombre } = req.params;
+    console.log(nombre.trim() )
 
     try {
-        if (typeof nombre === 'string' && nombre.trim() !== '') {
+        if (typeof nombre === 'string' && nombre.trim() !== "''") {
             const productos = await Producto.find({
                 nombre: { $regex: nombre, $options: 'i' } // 'i' para búsqueda insensible a mayúsculas
             });
@@ -51,7 +52,54 @@ const obtenerProductos = async (req, res) => {
 
 const obtenerProducto = async (req, res) => {
     const { id } = req.params;
+    //console.log(id)
+    const producto = await Producto.findById(id);
     
+    if(!producto){
+        const error = new Error("Prducto no encontrado");
+        return res.status(400).json({ msg: error.message });
+    }
+    res.json(producto)
 }
 
-export { registrar, obtenerProductos }
+const editarProducto = async (req, res) => {
+    const { id } = req.params;
+    const producto = await Producto.findById(id);
+    
+    if(!producto){
+        const error = new Error("Prducto no encontrado");
+        return res.status(400).json({ msg: error.message });
+    }
+    producto.codigo = req.body.codigo || producto.codigo;
+    producto.nombre = req.body.nombre || producto.nombre;
+    producto.descripcion = req.body.descripcion || producto.descripcion;
+    producto.precio = req.body.precio || producto.precio;
+    producto.categoria = req.body.categoria || producto.categoria;
+    producto.imagen = req.body.imagen || producto.imagen;
+    producto.estado = req.body.estado || producto.estado;
+
+    try {
+        const productoAlmacenado = await producto.save();
+        res.json(productoAlmacenado);
+    } catch (error) {
+        console.log(error);
+    }
+
+}
+
+const eliminarProducto = async (req, res) => {
+    const { id } = req.params;
+    const producto = await Producto.findById(id);
+    if(!producto){
+        const error = new Error("Prducto no encontrado");
+        return res.status(400).json({ msg: error.message });
+    }
+    try {
+        await Producto.deleteOne();
+        res.json({msg: "Producto Eliminado"})
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export { registrar, obtenerProductos , obtenerProducto, editarProducto, eliminarProducto}
