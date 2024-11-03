@@ -5,7 +5,7 @@ import { upload as multerUpload } from "../controllers/upload.js";
 
 router.post("/", registrar);
 router.post("/upload", multerUpload, upload);
-router.get("/", obtenerProductos);
+router.get("/listar/:nombre", obtenerProductos);
 router.route("/:id")
     .get(obtenerProducto)
     .put(editarProducto)

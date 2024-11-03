@@ -25,15 +25,16 @@ export const upload = (req, res) => {
     }
     res.send({
         message: "Imagen subida exitosamente",
-        filePath: `/uploads/images/${req.file.filename}`
+        filePath: `${req.file.filename}`
     });
 };
 
 const obtenerProductos = async (req, res) => {
-    const { nombre } = req.body;
+    const { nombre } = req.params;
+    console.log(nombre.trim() )
 
     try {
-        if (typeof nombre === 'string' && nombre.trim() !== '') {
+        if (typeof nombre === 'string' && nombre.trim() !== "''") {
             const productos = await Producto.find({
                 nombre: { $regex: nombre, $options: 'i' } // 'i' para búsqueda insensible a mayúsculas
             });
