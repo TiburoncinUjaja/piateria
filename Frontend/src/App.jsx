@@ -21,7 +21,7 @@ function App() {
         <section className="w-5/6 mx-auto px-8 pt-10">
           <Routes>
             <Route path="/" element={<Inicio searchTerm={searchTerm}></Inicio>}></Route>
-            <Route path="/Admin" element={<Admin></Admin>}></Route>
+            <Route path="/Admin" element={<Admin searchTerm={searchTerm}></Admin>}></Route>
             <Route path="/SobreNosotros" element={<AboutUs></AboutUs>}></Route>
             <Route path="/contactenos" element={<Contact></Contact>}></Route>
             <Route path="/login" element={<Login></Login>}></Route>

@@ -1,10 +1,10 @@
 import React from 'react'
 import FlashcardAdmin from '../components/FlashcardAdmin'
 
-const Admin = () => {
+const Admin = ({searchTerm}) => {
   return (
     <div>
-      <FlashcardAdmin/>
+      <FlashcardAdmin searchTerm={searchTerm}/>
 
     </div>
   )
