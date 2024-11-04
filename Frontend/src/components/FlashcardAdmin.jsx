@@ -1,7 +1,32 @@
-import React, { useEffect,useState } from "react";
-import Globos from "../img/globosRojos.jpg";
+import React, { useEffect, useState } from "react";
+import useProductos from "../hooks/useProductos";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-const FlashcardAdmin = () => {
+
+const imgURL = "http://localhost:4000/uploads/images"
+
+const Flashcard = ({ producto }) => {
+  return (
+    <div className="lg:w-auto md:w-1/2 p-4 bg-slate-200 relative rounded-lg hover:drop-shadow-2xl transition-shadow duration-500">
+      <a className="block relative h-80 rounded overflow-hidden">
+        <img
+          alt="ecommerce"
+          className="object-cover object-top w-full h-full block"
+          src={`${imgURL}/${producto.imagen}`}
+        />
+      </a>
+      <div className="mt-4">
+        <h2 className="text-gray-900 title-font text-lg font-medium">{producto.nombre}</h2>
+        <p className="mt-1">${producto.precio}</p>
+        <FontAwesomeIcon icon="fa-solid fa-pen" className="absolute 2xl bg-Azul-oscuro p-4 px-4 text-white rounded-full right-3 bottom-3 hover:bg-Azul-claro hover:scale-105 duration-100 font-bold" />
+          
+        
+      </div>
+    </div>
+  )
+}
+
+const FlashcardAdmin = ({searchTerm}) => {
   const [showForm, setShowForm] = useState(false);
   const [productImage, setProductImage] = useState(null); // Estado para la imagen del producto
   const [productCode, setProductCode] = useState("");
@@ -16,48 +41,61 @@ const FlashcardAdmin = () => {
   // Función para obtener los PQRs
   const fetchPqrs = async () => {
     try {
-        const response = await fetch('http://localhost:4000/api/pqrs/obtener');
-        if (!response.ok) {
-            throw new Error("Error al obtener los PQRs");
-        }
-        const data = await response.json();
-        console.log("Datos de PQRs recibidos:", data); // Muestra la estructura de `data` en la consola
-        
-        // Asegúrate de que data.pqrs existe y es un array antes de llamar a setPqrs
-        if (data && Array.isArray(data.pqrs)) {
-            setPqrs(data.pqrs);
-        } else {
-            console.warn("La respuesta no contiene un array 'pqrs' como se esperaba:", data);
-        }
+      const response = await fetch('http://localhost:4000/api/pqrs/obtener');
+      if (!response.ok) {
+        throw new Error("Error al obtener los PQRs");
+      }
+      const data = await response.json();
+      //console.log("Datos de PQRs recibidos:", data); // Muestra la estructura de `data` en la consola
+
+      // Asegúrate de que data.pqrs existe y es un array antes de llamar a setPqrs
+      if (data && Array.isArray(data.pqrs)) {
+        setPqrs(data.pqrs);
+      } else {
+        console.warn("La respuesta no contiene un array 'pqrs' como se esperaba:", data);
+      }
     } catch (error) {
-        console.error("Error al cargar los PQRs:", error);
+      console.error("Error al cargar los PQRs:", error);
     }
-};
+  };
 
-useEffect(() => {
+  useEffect(() => {
     fetchPqrs();
-}, []);
+  }, []);
 
-const handleEstadoChange = async (id, nuevoEstado) => {
-  try {
+  const handleEstadoChange = async (id, nuevoEstado) => {
+    try {
       const response = await fetch(`http://localhost:4000/api/pqrs/estado/${id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ estado: nuevoEstado })
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estado: nuevoEstado })
       });
 
       if (response.ok) {
-          const data = await response.json();
-          setPqrs(prevPqrs => prevPqrs.map(pqr => 
-              pqr._id === id ? { ...pqr, estado: nuevoEstado } : pqr
-          ));
+        const data = await response.json();
+        setPqrs(prevPqrs => prevPqrs.map(pqr =>
+          pqr._id === id ? { ...pqr, estado: nuevoEstado } : pqr
+        ));
       } else {
-          console.error("Error al actualizar el estado del PQR");
+        console.error("Error al actualizar el estado del PQR");
       }
-  } catch (error) {
+    } catch (error) {
       console.error("Error:", error);
-  }
-};
+    }
+  };
+
+  const [productos, setProductos] = useState([]);
+
+  const fethProductos = async () => {
+    //console.log(searchTerm)
+    const productosObtenidos = await useProductos(searchTerm);
+    //console.log(productosObtenidos);
+    setProductos(productosObtenidos);
+
+  };
+  useEffect(() => {
+    fethProductos();
+  }, [searchTerm]);
 
   // Función para alternar el formulario
   const toggleForm = () => {
@@ -79,10 +117,12 @@ const handleEstadoChange = async (id, nuevoEstado) => {
     formData.append("descripcion", productDescription);
     formData.append("categoria", productCategory);
     formData.append("estado", productState);
-    const productoData = {"codigo":productCode, 
-      "nombre":productName, "descripcion":productDescription, 
-      "categoria":productCategory, "precio":productPrice, 
-      "estado":productState === 'activo' };
+    const productoData = {
+      "codigo": productCode,
+      "nombre": productName, "descripcion": productDescription,
+      "categoria": productCategory, "precio": productPrice,
+      "estado": productState === 'activo'
+    };
     const imageData = new FormData();
     imageData.append("image", productImage);
 
@@ -116,7 +156,8 @@ const handleEstadoChange = async (id, nuevoEstado) => {
       });
       const productoAlmacenado = await res.json();
       console.log('Producto registrado:', productoAlmacenado);
-
+      await fethProductos();
+      
       // Limpia el formulario después de enviar
       setProductCode("");
       setProductName("");
@@ -126,6 +167,7 @@ const handleEstadoChange = async (id, nuevoEstado) => {
       setProductPrice("");
       setProductImage(null);
       setShowForm(false);
+
     } catch (error) {
       console.error("Error al subir la imagen:", error);
     }
@@ -287,57 +329,43 @@ const handleEstadoChange = async (id, nuevoEstado) => {
 
         {/* Productos */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-          <div className="lg:w-auto md:w-1/2 p-4 bg-slate-200 relative rounded-lg hover:drop-shadow-2xl transition-shadow duration-500">
-            <a className="block relative h-48 rounded overflow-hidden">
-              <img
-                alt="ecommerce"
-                className="object-cover object-center w-full h-full block"
-                src={Globos}
-              />
-            </a>
-            <div className="mt-4">
-              <h2 className="text-gray-900 title-font text-lg font-medium">Globos</h2>
-              <p className="mt-1">$16.00</p>
-              <button className="absolute 2xl bg-Azul-oscuro p-2 px-4 text-white rounded-full right-3 bottom-3 hover:bg-Azul-claro hover:scale-105 duration-100 font-bold">
-                +
-              </button>
-            </div>
-          </div>
-          {/* Añade más productos aquí */}
+        {productos.map(producto => (
+          <Flashcard key={producto._id} producto={producto} />
+            ))}
         </div>
       </div>
 
-       {/* Ver los PQRs Esta feo pero despues lo arreglo */}
-       <div className="bg-Azul-oscuro rounded">
-       <div className="container mx-auto py-10">
-        <h2 className="text-2xl font-bold mb-4 text-Azul-oscuro">Lista de PQRs</h2>
+      {/* Ver los PQRs Esta feo pero despues lo arreglo xd? */}
+      <div className="bg-Azul-oscuro rounded">
+        <div className="container mx-auto py-10">
+          <h2 className="text-2xl font-bold mb-4 text-Azul-oscuro">Lista de PQRs</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {pqrs.length > 0 ? (
-            pqrs.map((pqr) => (
+              pqrs.map((pqr) => (
                 <div key={pqr.serial} className="p-4 bg-slate-200 rounded-lg shadow-md">
-                    <h3 className="text-lg font-semibold">{pqr.asunto}</h3>
-                    <p><strong>Email:</strong> {pqr.email}</p>
-                    <p><strong>Mensaje:</strong> {pqr.mensaje}</p>
-                    <p><strong>Fecha:</strong> {pqr.fecha}</p>
-                    <p><strong>Estado:</strong> {pqr.estado}</p>
+                  <h3 className="text-lg font-semibold">{pqr.asunto}</h3>
+                  <p><strong>Email:</strong> {pqr.email}</p>
+                  <p><strong>Mensaje:</strong> {pqr.mensaje}</p>
+                  <p><strong>Fecha:</strong> {pqr.fecha}</p>
+                  <p><strong>Estado:</strong> {pqr.estado}</p>
 
-                    <select
-                        value={pqr.estado}
-                        onChange={(e) => handleEstadoChange(pqr._id, e.target.value)}
-                        className="w-full mt-2 px-2 py-1 border rounded"
-                    >
-                        <option value="no visto">No visto</option>
-                        <option value="en revisión">En revisión</option>
-                        <option value="resuelto">Resuelto</option>
-                    </select>
+                  <select
+                    value={pqr.estado}
+                    onChange={(e) => handleEstadoChange(pqr._id, e.target.value)}
+                    className="w-full mt-2 px-2 py-1 border rounded"
+                  >
+                    <option value="no visto">No visto</option>
+                    <option value="en revisión">En revisión</option>
+                    <option value="resuelto">Resuelto</option>
+                  </select>
                 </div>
-            ))
+              ))
             ) : (
-                <p>No hay PQRs disponibles.</p>
+              <p>No hay PQRs disponibles.</p>
             )}
+          </div>
         </div>
-</div>
-        </div>
+      </div>
     </section>
 
 
