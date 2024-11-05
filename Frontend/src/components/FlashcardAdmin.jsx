@@ -335,37 +335,7 @@ const FlashcardAdmin = ({searchTerm}) => {
         </div>
       </div>
 
-      {/* Ver los PQRs Esta feo pero despues lo arreglo xd? */}
-      <div className="bg-Azul-oscuro rounded">
-        <div className="container mx-auto py-10">
-          <h2 className="text-2xl font-bold mb-4 text-Azul-oscuro">Lista de PQRs</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {pqrs.length > 0 ? (
-              pqrs.map((pqr) => (
-                <div key={pqr.serial} className="p-4 bg-slate-200 rounded-lg shadow-md">
-                  <h3 className="text-lg font-semibold">{pqr.asunto}</h3>
-                  <p><strong>Email:</strong> {pqr.email}</p>
-                  <p><strong>Mensaje:</strong> {pqr.mensaje}</p>
-                  <p><strong>Fecha:</strong> {pqr.fecha}</p>
-                  <p><strong>Estado:</strong> {pqr.estado}</p>
 
-                  <select
-                    value={pqr.estado}
-                    onChange={(e) => handleEstadoChange(pqr._id, e.target.value)}
-                    className="w-full mt-2 px-2 py-1 border rounded"
-                  >
-                    <option value="no visto">No visto</option>
-                    <option value="en revisión">En revisión</option>
-                    <option value="resuelto">Resuelto</option>
-                  </select>
-                </div>
-              ))
-            ) : (
-              <p>No hay PQRs disponibles.</p>
-            )}
-          </div>
-        </div>
-      </div>
     </section>
 
 

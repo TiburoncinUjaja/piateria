@@ -4,46 +4,48 @@ const FormContact = () => {
   const [asunto, setAsunto] = useState("");
   const [email, setEmail] = useState("");
   const [mensaje, setMensaje] = useState("");
+  const [archivo, setArchivo] = useState(null);
   const [responseMessage, setResponseMessage] = useState(""); // Nuevo estado para el mensaje de respuesta
+
+  const handleFileChange = (e) => {
+    setArchivo(e.target.files[0]);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = {
-      email,
-      asunto,
-      mensaje,
-      fecha: new Date().toISOString(), // Generar fecha automáticamente
-    };
+    const formData = new FormData();
+    formData.append("asunto", asunto);
+    formData.append("email", email);
+    formData.append("mensaje", mensaje);
+    formData.append("fecha", new Date().toISOString());
+    if (archivo) {
+      formData.append("image", archivo); // Clave debe coincidir con el nombre esperado en el backend
+    }
 
     try {
       const response = await fetch("http://localhost:4000/api/pqrs/agregar", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+        body: formData,
       });
 
       const result = await response.json();
-      console.log(result); // Para ver la respuesta del servidor
+      console.log(result);
 
-      // Manejar la respuesta
       if (response.ok) {
-        setResponseMessage(result.mensaje); // Mensaje de éxito
-        // Limpiar los campos del formulario
+        setResponseMessage(result.mensaje);
         setAsunto("");
         setEmail("");
         setMensaje("");
+        setArchivo(null);
       } else {
-        setResponseMessage("Error al enviar los datos."); // Mensaje de error
+        setResponseMessage("Error al enviar los datos.");
       }
     } catch (error) {
       console.error("Error al enviar los datos:", error);
-      setResponseMessage("Error al enviar los datos."); // Mensaje de error
+      setResponseMessage("Error al enviar los datos.");
     }
   };
-
   return (
     <div className="relative min-h-screen flex items-center justify-center pb-7 px-4 sm:px-6 lg:px-8">
       <div className="absolute inset-0 z-0"></div>
@@ -101,25 +103,9 @@ const FormContact = () => {
               Adjuntar archivo
             </label>
             <div className="flex items-center justify-center w-full">
-              <label className="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center">
-                <div className="h-full w-full text-center flex flex-col justify-center items-center">
-                  <div className="flex flex-auto max-h-48 w-1/6 mx-auto -mt-10 ">
-                    <img
-                      className="has-mask h-36 object-center"
-                      src="https://img.freepik.com/free-vector/image-upload-concept-landing-page_52683-27130.jpg?size=338&ext=jpg"
-                      alt="freepik image"
-                    />
-                  </div>
-                  <p className="pointer-none text-gray-500 ">
-                    <span className="text-sm">Selecciona o suelta</span>{" "}
-                    archivos aquí <br /> o{" "}
-                    <a href="" className="text-Azul-claro hover:underline">
-                      selecciona archivos
-                    </a>{" "}
-                    de tu computadora
-                  </p>
-                </div>
-                <input type="file" className="hidden" />
+              <label className="flex flex-col items-center justify-center rounded-lg border-4 border-dashed w-full h-20 p-10 group text-center">
+
+                <input type="file"  onChange={handleFileChange} />
               </label>
             </div>
           </div>

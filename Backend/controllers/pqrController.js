@@ -1,26 +1,31 @@
 import PQR from "../models/PQR.js";
 import generarId from "../helpers/generarId.js";
-
+import path from "path";
 
 const AgregarPqr = async (req, res) => {
-    try {
-        const serial = generarId(); 
-        const pqr = new PQR({
+  try {
+    const serial = generarId();
+    const archivo = req.file ? `uploads/images/${req.file.filename}` : null; // Ruta del archivo
 
-        ...req.body, serial});
-        const pqrAlmacenado = await pqr.save();
-        
-        res.status(201).json({
-            mensaje: "Datos enviados exitosamente",
-            pqr: pqrAlmacenado
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            mensaje: "Error al enviar los datos",
-            error: error.message
-        });
-    }
+    const pqr = new PQR({
+      ...req.body,
+      serial,
+      archivo, // Agrega la ruta del archivo a la base de datos si existe
+    });
+
+    const pqrAlmacenado = await pqr.save();
+
+    res.status(201).json({
+      mensaje: "Datos enviados exitosamente",
+      pqr: pqrAlmacenado,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "Error al enviar los datos",
+      error: error.message,
+    });
+  }
 };
 
 // Obtener todos los PQRs
