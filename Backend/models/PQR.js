@@ -26,7 +26,11 @@ const pqrSchema = mongoose.Schema({
         type: String, 
         enum: ['no visto', 'en revisión', 'resuelto'], 
         default: 'no visto' 
-    } // Campo de estado
+    }, // Campo de estado
+    archivo: {
+        type: String,
+        required: false,
+    }
 });
 const PQR = mongoose.model("PQR",  pqrSchema);
 export default PQR;
