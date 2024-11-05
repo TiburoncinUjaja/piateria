@@ -17,4 +17,21 @@ const obtenerProductos = async (nombre = "") => {
     }
 }
 
-export default obtenerProductos;
+const url2 = "http://localhost:4000/api/productos/"
+const obtenerProducto = async (id = "") => {
+    try {
+        const idParam = id ? id : "''";
+        console.log(`${url2}${idParam}`);
+        const response = await fetch(`${url2}${idParam}`)
+        if (!response.ok) {
+            throw Error("Error al obtener el producto")
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
+export {obtenerProductos, obtenerProducto};

@@ -1,10 +1,26 @@
 import React, { useEffect, useState } from "react";
-import useProductos from "../hooks/useProductos";
+import { obtenerProductos, obtenerProducto} from "../hooks/useProductos.js";
 import Globos from "../img/globosRojos.jpg";
+import Modal from "./ModalProduct";
 
 const imgURL = "http://localhost:4000/uploads/images"
 
 const Flashcard = ({ producto }) => {
+  // const handleProductoClick = (key) => {
+  //   setSelectedProducto(producto);
+  //   setShowModal(true);
+  // };
+  const closeModal = () => {
+    setSelectedProducto(null);
+    setShowModal(false);
+  };
+  const fethProducto = async (key) => {
+    //console.log(searchTerm)
+    const productoObtenido = await obtenerProducto(key);
+    //console.log(productosObtenidos);
+    setProductos(productoObtenido);
+    
+  };
   return (
     <div className="lg:w-auto md:w-1/2 p-4 bg-slate-200 relative rounded-lg hover:drop-shadow-2xl transition-shadow duration-500 ">
       <a className="block relative h-48 rounded overflow-hidden">
@@ -19,7 +35,7 @@ const Flashcard = ({ producto }) => {
           { producto.nombre }
         </h2>
         <p className="mt-1">{producto.precio}</p>
-        <button className="absolute 2xl bg-Azul-oscuro p-2 px-4 text-white rounded-full right-3 bottom-3 hover:bg-Azul-claro hover:scale-105 duration-100 font-bold">
+        <button onClick={fethProducto(producto._id)} className="absolute 2xl bg-Azul-oscuro p-2 px-4 text-white rounded-full right-3 bottom-3 hover:bg-Azul-claro hover:scale-105 duration-100 font-bold">
           +
         </button>
       </div>
@@ -33,7 +49,7 @@ const FlashcardPage = ({searchTerm}) => {
   useEffect(() => {
     const fethProductos = async () => {
       //console.log(searchTerm)
-      const productosObtenidos = await useProductos(searchTerm);
+      const productosObtenidos = await obtenerProductos(searchTerm);
       //console.log(productosObtenidos);
       setProductos(productosObtenidos);
       
@@ -55,7 +71,7 @@ const FlashcardPage = ({searchTerm}) => {
         {/* Productos */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 ">
         {productos.map(producto => (
-                <Flashcard key={producto._id} producto={producto} />
+                <Flashcard key={producto._id} producto={producto}/>
             ))}
         </div>
       </div>

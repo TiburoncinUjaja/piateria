@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import useProductos from "../hooks/useProductos";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { obtenerProductos, obtenerProducto} from "../hooks/useProductos.js";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Modal from "./ModalProduct";
 
 const imgURL = "http://localhost:4000/uploads/images"
 
-const Flashcard = ({ producto }) => {
+const Flashcard = ({ producto, onClick }) => {
   return (
     <div className="lg:w-auto md:w-1/2 p-4 bg-slate-200 relative rounded-lg hover:drop-shadow-2xl transition-shadow duration-500">
       <a className="block relative h-80 rounded overflow-hidden">
@@ -18,7 +19,7 @@ const Flashcard = ({ producto }) => {
       <div className="mt-4">
         <h2 className="text-gray-900 title-font text-lg font-medium">{producto.nombre}</h2>
         <p className="mt-1">${producto.precio}</p>
-        <FontAwesomeIcon icon="fa-solid fa-pen" className="absolute 2xl bg-Azul-oscuro p-4 px-4 text-white rounded-full right-3 bottom-3 hover:bg-Azul-claro hover:scale-105 duration-100 font-bold" />
+        <FontAwesomeIcon onClick={onClick} icon="fa-solid fa-pen" className="absolute 2xl bg-Azul-oscuro p-4 px-4 text-white rounded-full right-3 bottom-3 hover:bg-Azul-claro hover:scale-105 duration-100 font-bold" />
           
         
       </div>
@@ -28,6 +29,7 @@ const Flashcard = ({ producto }) => {
 
 const FlashcardAdmin = ({searchTerm}) => {
   const [showForm, setShowForm] = useState(false);
+  const [editMode, seteditMode] = useState(false);
   const [productImage, setProductImage] = useState(null); // Estado para la imagen del producto
   const [productCode, setProductCode] = useState("");
   const [productName, setProductName] = useState("");
@@ -37,6 +39,36 @@ const FlashcardAdmin = ({searchTerm}) => {
   const [productPrice, setProductPrice] = useState("");
 
   const [pqrs, setPqrs] = useState([]);
+
+  const [showModal, setShowModal] = useState(false);
+  
+  const [selectedProducto, setSelectedProducto] = useState([]);
+  // const handleProductoClick = (key) => {
+  //   setSelectedProducto(producto);
+  // };
+  const closeModal = () => {
+    setSelectedProducto(null);
+    setShowModal(false);
+  };
+
+  const fethProducto = async (key) => {
+    console.log(key)
+    const productoObtenido = await obtenerProducto(key);
+    //console.log(productosObtenidos);
+    setShowModal(true);
+    setSelectedProducto(productoObtenido);
+  };
+  
+const editarProducto =(producto)=>{
+  setProductCode(producto.codigo);
+  setProductName(producto.nombre);
+  setProductDescripcion(producto.descripcion);
+  setProductCategory(producto.categoria);
+  setProductState(producto.estado)
+  setProductPrice(producto.precio);
+  setShowForm(true);
+  seteditMode(true);
+}
 
   // Función para obtener los PQRs
   const fetchPqrs = async () => {
@@ -88,7 +120,7 @@ const FlashcardAdmin = ({searchTerm}) => {
 
   const fethProductos = async () => {
     //console.log(searchTerm)
-    const productosObtenidos = await useProductos(searchTerm);
+    const productosObtenidos = await obtenerProductos(searchTerm);
     //console.log(productosObtenidos);
     setProductos(productosObtenidos);
 
@@ -100,6 +132,7 @@ const FlashcardAdmin = ({searchTerm}) => {
   // Función para alternar el formulario
   const toggleForm = () => {
     setShowForm(!showForm);
+    editMode(true);
   };
 
   // Maneja la selección de imagen
@@ -330,10 +363,15 @@ const FlashcardAdmin = ({searchTerm}) => {
         {/* Productos */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
         {productos.map(producto => (
-          <Flashcard key={producto._id} producto={producto} />
+          <Flashcard key={producto._id} producto={producto} onClick={() => editarProducto(producto)}/>
             ))}
         </div>
       </div>
+      
+      {/* Modal de detalles del producto */}
+      {showModal && selectedProducto && (
+        <Modal producto={selectedProducto} onClose={closeModal} />
+      )}
 
       {/* Ver los PQRs Esta feo pero despues lo arreglo xd? */}
       <div className="bg-Azul-oscuro rounded">
