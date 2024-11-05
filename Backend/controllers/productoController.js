@@ -31,7 +31,7 @@ export const upload = (req, res) => {
 
 const obtenerProductos = async (req, res) => {
     const { nombre } = req.params;
-    console.log(nombre.trim() )
+    //console.log(nombre.trim() )
 
     try {
         if (typeof nombre === 'string' && nombre.trim() !== "''") {
