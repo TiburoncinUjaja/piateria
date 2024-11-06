@@ -10,6 +10,8 @@ import { AboutUs } from "./pages/AboutUs";
 import Contact from "./pages/Contact";
 import PageAPI from "./pages/PageAPI";
 
+
+
 function App() {
   const [count, setCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");

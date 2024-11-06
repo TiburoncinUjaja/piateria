@@ -5,11 +5,7 @@ const usuarioSchema = mongoose.Schema({
     nombres: {
         type: String,
         required: true
-    },
-    apellido: {
-        type: String,
-        required: true
-    },
+    },    
     password: {
         type: String,
         required: true,
@@ -21,16 +17,9 @@ const usuarioSchema = mongoose.Schema({
         trim: true,
         unique: true
     },
-    telefono: {
-        type: String,
-        required: true,
-        trim: true,
-        unique: true
-    },
     rol: {
         type: String,
-        required: true,
-        trim: true,
+        default: 'user',
     },
     token: {
         type: String
