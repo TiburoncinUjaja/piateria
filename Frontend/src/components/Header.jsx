@@ -2,33 +2,28 @@ import React, { useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
 import logo from "../img/logo.png";
 import Users from "./Users";
+import { useUser } from "../context/UserContext";
+import UserDropdown from "./Dropdown";
 
 const Header = ({searchTerm, setSearchTerm }) => {
-  const [sesionActiva, setSesionActiva] = useState(false);
-  const [nombreUsuario, setNombreUsuario] = useState("");
-
-  useEffect(() => {
-    // Verificar y establecer el estado de la sesión al cargar el componente
-    const sesion = JSON.parse(localStorage.getItem("sesion"));
-    if (sesion && sesion[0]) {
-      setSesionActiva(true);
-      setNombreUsuario(sesion[0]);
-    } else {
-      setSesionActiva(false);
-      setNombreUsuario("");
-    }
-  }, []);
+  const { user, logout } = useUser();
 
   const handleSearchTermClick = (e) => {
-    e.preventDefault(); // Evitar que recargue la página
+    e.preventDefault();
     const searchInput = document.getElementById("default-search").value;
-    setSearchTerm(searchInput); // Actualiza el estado con el valor ingresado
+    setSearchTerm(searchInput);
   };
 
-  const btnLink =
-    "mr-5 px-5 py-5 hover:text-Azul-oscuro hover:border-b-2 border-Azul-oscuro cursor-pointer";
-  const btnActive =
-    "mr-5 px-5 py-5 text-Azul-oscuro border-b-2 border-Azul-oscuro cursor-pointer";
+  const handleLogout = () => {
+    logout();  // Llamamos a la función de logout desde el contexto // Redirigimos a la página de login después de cerrar sesión
+  };
+
+  
+
+
+  const btnLink = "mr-5 px-5 py-5 hover:text-Azul-oscuro hover:border-b-2 border-Azul-oscuro cursor-pointer";
+  const btnActive = "mr-5 px-5 py-5 text-Azul-oscuro border-b-2 border-Azul-oscuro cursor-pointer";
+
   return (
     <header className="text-gray-600 body-font">
       <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center justify-between ps-16">
@@ -85,13 +80,19 @@ const Header = ({searchTerm, setSearchTerm }) => {
         </form>
 
         <div className="divide-x align-middle">
-          {sesionActiva ? (
-            <Users />
+        {user ? (
+            <div className="flex items-center">
+            {/*<span className="mr-4">Hola, {user.nombres}</span>*/}
+              <div className="flex items-center">
+              {/* Mostrar dropdown solo si el usuario está logueado */}
+              <UserDropdown user={user} handleLogout={handleLogout} />
+            </div>
+            </div>
           ) : (
-            <Link to="/login" className="px-5 ">
+            <Link to="/login" className="px-5">
               <button
                 type="button"
-                className="text-white bg-Azul-oscuro border-2 border-Azul-oscuro hover:text-Azul-oscuro hover:bg-Beige hover:w-30 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2"
+                className="text-white bg-Azul-oscuro border-2 border-Azul-oscuro hover:text-Azul-oscuro hover:bg-Beige font-medium rounded-full text-sm px-5 py-2.5"
               >
                 Login
               </button>

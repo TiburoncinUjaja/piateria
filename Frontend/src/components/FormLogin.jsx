@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext'; // Importa el hook useUser
 
 const FormLogin = () => {
     const navigate = useNavigate();
+    const { setUser } = useUser(); // Obtiene setUser del contexto de usuario
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -19,7 +21,7 @@ const FormLogin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const { email, password } = formData;
-        
+
         try {
             const response = await fetch("http://localhost:4000/api/usuarios/login", {
                 method: "POST",
@@ -30,26 +32,20 @@ const FormLogin = () => {
             });
 
             const data = await response.json();
-
+            console.log(data);
+            
             if (response.ok) {
-                // Guardar solo los datos del usuario (sin token ni verificación)
                 const userData = {
                     email: data.user.email,
                     nombres: data.user.nombres,
                     rol: data.user.rol
                 };
-                
-                // Puedes almacenar el usuario en un contexto, o en el estado global
-                // Si no usas contexto, puedes usar algo similar al localStorage si lo necesitas sin el token
-                // localStorage.setItem('sesion', JSON.stringify(userData)); // Este paso lo puedes omitir
-
-                // Usar el estado del contexto (si lo tienes)
-                // setUser(userData); // Si tienes un estado de usuario en un Context
-
-                navigate('/'); // Redirigir al usuario al inicio
+                setUser(userData); // Esto actualizará tanto el contexto como localStorage
+                navigate('/'); 
             } else {
-                setError(true);  // Mostrar error si los datos son incorrectos
+                setError(true); 
             }
+            
         } catch (error) {
             console.error("Error en la solicitud:", error);
             setError(true);  // Mostrar error si ocurre una excepción
@@ -58,7 +54,7 @@ const FormLogin = () => {
 
     return (
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0 w-1/2">
-            <div className="w-full shadow-lg rounded-2xl p-6 inline-block bg-gray-100 h-full ">
+            <div className="w-full shadow-lg rounded-2xl p-6 inline-block bg-gray-100 h-full">
                 <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                     <h1 className="text-3xl font-bold leading-tight tracking-tight text-Azul-oscuro text-center">
                         ¡Inicia sesión aquí!
