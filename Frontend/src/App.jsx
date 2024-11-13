@@ -9,12 +9,16 @@ import Admin from "./pages/Admin";
 import { AboutUs } from "./pages/AboutUs";
 import Contact from "./pages/Contact";
 import PageAPI from "./pages/PageAPI";
+import { UserProvider } from "./context/UserContext";
+
+
 
 function App() {
   const [count, setCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   return (
     <>
+    <UserProvider>
       <div className="bg-gradient-to-b from-gray-50 to-gray-200 min-h-screen">
         <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} ></Header>
 
@@ -32,6 +36,8 @@ function App() {
         </section>
       </div>
       <Footer />
+    </UserProvider>
+
     </>
   );
 }

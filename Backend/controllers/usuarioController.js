@@ -1,5 +1,28 @@
 import Usuario from "../models/Usuario.js";
 import generarId from "../helpers/generarId.js";
+import bcrypt from 'bcryptjs';
+
+const obtenerUsuarioAutenticado = async (req, res) => {
+    const { token } = req.headers;  // El token debe ser enviado en el header de la solicitud
+
+    // Verificar si el token es válido
+    const usuario = await Usuario.findOne({ token });
+
+    if (!usuario) {
+        return res.status(404).json({ msg: "No se encontró el usuario" });
+    }
+
+    res.json({
+        user: {
+            id: usuario._id,
+            nombres: usuario.nombres,
+            email: usuario.email,
+            rol: usuario.rol,
+        }
+    });
+};
+
+export { obtenerUsuarioAutenticado };
 
 const registrar = async (req, res) => {
     //Evitar registros duplicados
@@ -23,21 +46,34 @@ const registrar = async (req, res) => {
 };
 
 const autenticar = async (req, res) => {
-    const {email, password} = req.body;
-    //comprobar si el usuario existe
-    const usuario = await Usuario.findOne({email});
+    const { email, password } = req.body;
 
-    if(!usuario){
+    // Comprobar si el usuario existe
+    const usuario = await Usuario.findOne({ email });
+
+    if (!usuario) {
         const error = new Error("El usuario no existe");
-        return res.status(404).json({ msg: error.message});
+        return res.status(404).json({ msg: error.message });
     }
-    //Compribar si el usuario esta confirmado
-    if(!usuario.confirmado){
-        const error = new Error("Tu cuenta no ha sido confirmada");
-        return res.status(403).json({ msg: error.message});
-    }
-};
 
+    // Comprobar si la contraseña es correcta
+    const passwordCorrecto = await bcrypt.compare(password, usuario.password);
+    if (!passwordCorrecto) {
+        const error = new Error("Contraseña incorrecta");
+        return res.status(400).json({ msg: error.message });
+    }
+
+    res.json({
+        user: {
+            id: usuario._id,
+            nombres: usuario.nombres,
+            email: usuario.email,
+            rol: usuario.rol
+        }
+    });
+
+    
+};
 const confirmar = async (req, res) =>{
     const { token } = req.params;
     console.log(token)
@@ -107,4 +143,6 @@ const nuevoPassword = async  (req,res) =>{
     }
 }
 
+
 export {registrar, autenticar, confirmar, olvidePassword, comprobarToken, nuevoPassword}
+
