@@ -29,7 +29,6 @@ const Flashcard = ({ producto, onClick }) => {
 
 const FlashcardAdmin = ({searchTerm}) => {
   const [showForm, setShowForm] = useState(false);
-  const [editMode, seteditMode] = useState(false);
   const [productImage, setProductImage] = useState(null); // Estado para la imagen del producto
   const [productCode, setProductCode] = useState("");
   const [productName, setProductName] = useState("");
@@ -67,7 +66,6 @@ const editarProducto =(producto)=>{
   setProductState(producto.estado)
   setProductPrice(producto.precio);
   setShowForm(true);
-  seteditMode(true);
 }
 
   // Función para obtener los PQRs
@@ -132,7 +130,6 @@ const editarProducto =(producto)=>{
   // Función para alternar el formulario
   const toggleForm = () => {
     setShowForm(!showForm);
-    editMode(true);
   };
 
   // Maneja la selección de imagen
