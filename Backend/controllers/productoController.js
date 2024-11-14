@@ -41,17 +41,19 @@ const obtenerProductos = async (req, res) => {
         }
 
         // console.log(categoria);
-        if (categoria && categoria.trim() !== '') {
-            filtro.categoria = categoria.trim();
+        if (categoria!=='all'){
+
+            if (categoria && categoria.trim() !== '') {
+                filtro.categoria = categoria.trim();
+            }
         }
-
-
+            
+        //console.log(filtro.categoria)
         let productos;
-
         if (!filtro.categoria) {
             productos = await Producto.find(filtro)
                 .sort({ createdAt: -1 })
-                .limit(6);
+                .limit(categoria !== 'all' ? 6 : 0);
         } else {
             productos = await Producto.find(filtro);
         }

@@ -118,7 +118,7 @@ const editarProducto =(producto)=>{
 
   const fethProductos = async () => {
     //console.log(searchTerm)
-    const productosObtenidos = await obtenerProductos(searchTerm);
+    const productosObtenidos = await obtenerProductos(searchTerm, 'all');
     //console.log(productosObtenidos);
     setProductos(productosObtenidos);
 
