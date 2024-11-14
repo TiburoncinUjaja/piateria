@@ -27,7 +27,6 @@ const Modal = ({ producto, onClose }) => {
             <p> {producto.descripcion || "No disponible"}</p>
             </div>
             {/* Agrega otros detalles aquí */}
-           
           </div>
 
         </div>

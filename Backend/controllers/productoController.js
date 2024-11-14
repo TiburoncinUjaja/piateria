@@ -30,25 +30,38 @@ export const upload = (req, res) => {
 };
 
 const obtenerProductos = async (req, res) => {
-    const { nombre } = req.params;
-    //console.log(nombre.trim() )
-
+    const { nombre, categoria } = req.query;
+    // console.log(nombre);
+    // console.log(categoria);
     try {
-        if (typeof nombre === 'string' && nombre.trim() !== "''") {
-            const productos = await Producto.find({
-                nombre: { $regex: nombre, $options: 'i' } // 'i' para búsqueda insensible a mayúsculas
-            });
-            res.json(productos);
-        } else {
-            
-            const productos = await Producto.find({});
-            res.json(productos);
+        let filtro = {};
+
+        if (nombre && nombre.trim() !== '') {
+            filtro.nombre = { $regex: nombre, $options: 'i' }; 
         }
+
+        // console.log(categoria);
+        if (categoria && categoria.trim() !== '') {
+            filtro.categoria = categoria.trim();
+        }
+
+
+        let productos;
+
+        if (!filtro.categoria) {
+            productos = await Producto.find(filtro)
+                .sort({ createdAt: -1 })
+                .limit(6);
+        } else {
+            productos = await Producto.find(filtro);
+        }
+        
+        res.json(productos);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al buscar los productos.' });
     }
-}
+};
 
 const obtenerProducto = async (req, res) => {
     const { id } = req.params;

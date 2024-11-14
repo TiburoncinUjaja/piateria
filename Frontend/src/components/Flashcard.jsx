@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { obtenerProductos, obtenerProducto} from "../hooks/useProductos.js";
-import Globos from "../img/globosRojos.jpg";
 import Modal from "./ModalProduct";
+import CarouselCategories from '../components/CarouselCategories.JSX'
 
 const imgURL = "http://localhost:4000/uploads/images"
 
 const Flashcard = ({ producto, openModal  }) => {
-  
   return (
     <div className="lg:w-auto md:w-1/2 p-4 bg-slate-200 relative rounded-lg hover:drop-shadow-2xl transition-shadow duration-500 ">
       <a className="block relative h-48 rounded overflow-hidden">
@@ -32,16 +31,18 @@ const Flashcard = ({ producto, openModal  }) => {
 const FlashcardPage = ({searchTerm}) => {
   const [productos, setProductos] = useState([]);
   const [producto, setProducto] = useState([]);
+  const [categoria, setCategoria] = useState('');
   const [showModal, setShowModal] = useState(false);
+
 
   useEffect(() => {
     const fethProductos = async () => {
-      const productosObtenidos = await obtenerProductos(searchTerm);
+      const productosObtenidos = await obtenerProductos(searchTerm, categoria);
       setProductos(productosObtenidos);
-      
     };
+    console.log(categoria)
     fethProductos();
-  }, [searchTerm]);
+  }, [searchTerm, categoria]);
 
   const openModal = async (productoId) => {
     const producto = await obtenerProducto(productoId);
@@ -64,7 +65,7 @@ const FlashcardPage = ({searchTerm}) => {
           </h1>
           <div className="h-1 w-20 bg-Azul-oscuro rounded"></div>
         </div>
-
+        <CarouselCategories categoria={categoria} setCategoria={setCategoria}/>
         {/* Productos */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 ">
         {productos.map(producto => (
