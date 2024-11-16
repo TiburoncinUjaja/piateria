@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { obtenerProductos, obtenerProducto} from "../hooks/useProductos.js";
-
+import Modal2 from "./modalEditDelete.jsx";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Modal from "./ModalProduct";
 
@@ -29,7 +29,6 @@ const Flashcard = ({ producto, onClick }) => {
 
 const FlashcardAdmin = ({searchTerm}) => {
   const [showForm, setShowForm] = useState(false);
-  const [editMode, seteditMode] = useState(false);
   const [productImage, setProductImage] = useState(null); // Estado para la imagen del producto
   const [productCode, setProductCode] = useState("");
   const [productName, setProductName] = useState("");
@@ -41,6 +40,7 @@ const FlashcardAdmin = ({searchTerm}) => {
   const [pqrs, setPqrs] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
+  const [showModal2, setShowModal2] = useState(false);
   
   const [selectedProducto, setSelectedProducto] = useState([]);
   // const handleProductoClick = (key) => {
@@ -50,6 +50,11 @@ const FlashcardAdmin = ({searchTerm}) => {
     setSelectedProducto(null);
     setShowModal(false);
   };
+
+  const closeModal2 = () =>{
+    setSelectedProducto(null);
+    setShowModal2(false);
+  }
 
   const fethProducto = async (key) => {
     console.log(key)
@@ -67,7 +72,6 @@ const editarProducto =(producto)=>{
   setProductState(producto.estado)
   setProductPrice(producto.precio);
   setShowForm(true);
-  seteditMode(true);
 }
 
   // Función para obtener los PQRs
@@ -132,7 +136,6 @@ const editarProducto =(producto)=>{
   // Función para alternar el formulario
   const toggleForm = () => {
     setShowForm(!showForm);
-    editMode(true);
   };
 
   // Maneja la selección de imagen
@@ -361,6 +364,9 @@ const editarProducto =(producto)=>{
 
         {/* Productos */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+        {showModal2 && selectedProducto &&(
+          <Modal2 producto={selectedProducto} onClose={closeModal2}></Modal2>
+        )}
         {productos.map(producto => (
           <Flashcard key={producto._id} producto={producto} onClick={() => editarProducto(producto)}/>
             ))}
