@@ -124,7 +124,7 @@ const editarProducto =(producto)=>{
 
   const fethProductos = async () => {
     //console.log(searchTerm)
-    const productosObtenidos = await obtenerProductos(searchTerm);
+    const productosObtenidos = await obtenerProductos(searchTerm, 'all');
     //console.log(productosObtenidos);
     setProductos(productosObtenidos);
 
@@ -305,10 +305,11 @@ const editarProducto =(producto)=>{
                     className="w-full px-3 py-2 border rounded"
                     required
                   >
-                    <option value="piatas">Piñatas</option>
+                    <option value="piñatas">Piñatas</option>
                     <option value="inflables">Inflables</option>
                     <option value="juguetes">Juguetes</option>
                     <option value="decoracion">Decoración</option>
+                    <option value="velas">Velas</option>
                     <option value="otros">Otros</option>
                   </select>
                 </div>

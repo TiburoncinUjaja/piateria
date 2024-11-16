@@ -12,8 +12,10 @@ export default {
         'Beige': '#EEF4ED',
         'Salmon': '#EDDEA4',
         'Rojo': '#F7A072',
+      },
+      fontFamily: {
+        quicksand: ['Quicksand', 'sans-serif'],
       }
-
     },
   },
   plugins: [require("tw-elements-react/dist/plugin.cjs")],

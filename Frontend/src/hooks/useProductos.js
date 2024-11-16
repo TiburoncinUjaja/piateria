@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react"
-const url = "http://localhost:4000/api/productos/listar/"
+const url = new URL('http://localhost:4000/api/productos/listar');
 
-const obtenerProductos = async (nombre = "") => {
+const obtenerProductos = async (nombre = '', categoria = '') => {
     try {
-        const nombreParam = nombre ? nombre : "''";
-        console.log(`${url}${nombreParam}`);
-        const response = await fetch(`${url}${nombreParam}`)
+        url.searchParams.set('nombre', nombre);
+        url.searchParams.set('categoria', categoria);
+
+        const response = await fetch(url);
         if (!response.ok) {
             throw Error("Error al obtener los productos")
         }

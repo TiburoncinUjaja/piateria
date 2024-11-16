@@ -1,6 +1,5 @@
 import React from 'react'
 import FormRegister from '../components/FormRegister'
-import RegistroList from '../components/RegisterList'
 import FormLogin from '../components/FormLogin'
 
 
@@ -11,7 +10,6 @@ const Login = () => {
         <FormRegister />
         <FormLogin />
       </div>
-      <RegistroList/> 
 
     </div>
   )
