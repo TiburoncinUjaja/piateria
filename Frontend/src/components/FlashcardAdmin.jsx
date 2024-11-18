@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { obtenerProductos, obtenerProducto} from "../hooks/useProductos.js";
-
+import { obtenerProductos, obtenerProducto } from "../hooks/useProductos.js";
+import Modal2 from "./modalEditDelete.jsx";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Modal from "./ModalProduct";
 
@@ -20,14 +20,12 @@ const Flashcard = ({ producto, onClick }) => {
         <h2 className="text-gray-900 title-font text-lg font-medium">{producto.nombre}</h2>
         <p className="mt-1">${producto.precio}</p>
         <FontAwesomeIcon onClick={onClick} icon="fa-solid fa-pen" className="absolute 2xl bg-Azul-oscuro p-4 px-4 text-white rounded-full right-3 bottom-3 hover:bg-Azul-claro hover:scale-105 duration-100 font-bold" />
-          
-        
       </div>
     </div>
   )
 }
 
-const FlashcardAdmin = ({searchTerm}) => {
+const FlashcardAdmin = ({ searchTerm }) => {
   const [showForm, setShowForm] = useState(false);
   const [productImage, setProductImage] = useState(null); // Estado para la imagen del producto
   const [productCode, setProductCode] = useState("");
@@ -40,7 +38,8 @@ const FlashcardAdmin = ({searchTerm}) => {
   const [pqrs, setPqrs] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
-  
+  const [showModal2, setShowModal2] = useState(false);
+
   const [selectedProducto, setSelectedProducto] = useState([]);
   // const handleProductoClick = (key) => {
   //   setSelectedProducto(producto);
@@ -50,23 +49,18 @@ const FlashcardAdmin = ({searchTerm}) => {
     setShowModal(false);
   };
 
-  const fethProducto = async (key) => {
+  const fetchProducto = async (key) => {
     console.log(key)
     const productoObtenido = await obtenerProducto(key);
     //console.log(productosObtenidos);
     setShowModal(true);
     setSelectedProducto(productoObtenido);
   };
-  
-const editarProducto =(producto)=>{
-  setProductCode(producto.codigo);
-  setProductName(producto.nombre);
-  setProductDescripcion(producto.descripcion);
-  setProductCategory(producto.categoria);
-  setProductState(producto.estado)
-  setProductPrice(producto.precio);
-  setShowForm(true);
-}
+
+  const editarProducto = (producto) => {
+    setSelectedProducto(producto);
+    setShowModal2(true);
+  };
 
   // Función para obtener los PQRs
   const fetchPqrs = async () => {
@@ -130,6 +124,27 @@ const editarProducto =(producto)=>{
   // Función para alternar el formulario
   const toggleForm = () => {
     setShowForm(!showForm);
+    // Limpia el formulario después de enviar
+    setProductCode("");
+    setProductName("");
+    setProductDescripcion("");
+    setProductCategory("");
+    setProductState("")
+    setProductPrice("");
+    setProductImage(null);
+  };
+
+  const toggleFormEdit = () => {
+    setShowModal2(!showModal2);
+    // Limpia el formulario después de enviar
+    setProductCode("");
+    setProductName("");
+    setProductDescripcion("");
+    setProductCategory("");
+    setProductState("")
+    setProductPrice("");
+    setProductImage(null);
+    setSelectedProducto(null);
   };
 
   // Maneja la selección de imagen
@@ -187,16 +202,7 @@ const editarProducto =(producto)=>{
       const productoAlmacenado = await res.json();
       console.log('Producto registrado:', productoAlmacenado);
       await fethProductos();
-      
-      // Limpia el formulario después de enviar
-      setProductCode("");
-      setProductName("");
-      setProductDescripcion("");
-      setProductCategory("");
-      setProductState("")
-      setProductPrice("");
-      setProductImage(null);
-      setShowForm(false);
+      toggleForm();
 
     } catch (error) {
       console.error("Error al subir la imagen:", error);
@@ -299,6 +305,7 @@ const editarProducto =(producto)=>{
                     className="w-full px-3 py-2 border rounded"
                     required
                   >
+                    <option value="" disabled>Seleccione una opción</option>
                     <option value="piñatas">Piñatas</option>
                     <option value="inflables">Inflables</option>
                     <option value="juguetes">Juguetes</option>
@@ -317,6 +324,7 @@ const editarProducto =(producto)=>{
                     className="w-full px-3 py-2 border rounded"
                     required
                   >
+                    <option value="" disabled>Seleccione una opción</option>
                     <option value="activo">Activo</option>
                     <option value="inactivo">Inactivo</option>
                   </select>
@@ -359,12 +367,14 @@ const editarProducto =(producto)=>{
 
         {/* Productos */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-        {productos.map(producto => (
-          <Flashcard key={producto._id} producto={producto} onClick={() => editarProducto(producto)}/>
-            ))}
+          {productos.map(producto => (
+            <Flashcard key={producto._id} producto={producto} onClick={() => editarProducto(producto)}/>
+          ))}
         </div>
       </div>
-      
+      {showModal2 && selectedProducto && (
+        <Modal2 producto={selectedProducto} onClose={toggleFormEdit} fethProductos={() => fethProductos()}></Modal2>
+      )}
       {/* Modal de detalles del producto */}
       {showModal && selectedProducto && (
         <Modal producto={selectedProducto} onClose={closeModal} />
