@@ -1,3 +1,4 @@
+
 import Usuario from "../models/Usuario.js";
 import generarId from "../helpers/generarId.js";
 import bcrypt from 'bcryptjs';
@@ -7,7 +8,6 @@ const obtenerUsuarioAutenticado = async (req, res) => {
 
     // Verificar si el token es válido
     const usuario = await Usuario.findOne({ token });
-
     if (!usuario) {
         return res.status(404).json({ msg: "No se encontró el usuario" });
     }
@@ -45,35 +45,43 @@ const registrar = async (req, res) => {
     }
 };
 
+
+
 const autenticar = async (req, res) => {
     const { email, password } = req.body;
 
-    // Comprobar si el usuario existe
-    const usuario = await Usuario.findOne({ email });
-
-    if (!usuario) {
-        const error = new Error("El usuario no existe");
-        return res.status(404).json({ msg: error.message });
-    }
-
-    // Comprobar si la contraseña es correcta
-    const passwordCorrecto = await bcrypt.compare(password, usuario.password);
-    if (!passwordCorrecto) {
-        const error = new Error("Contraseña incorrecta");
-        return res.status(400).json({ msg: error.message });
-    }
-
-    res.json({
-        user: {
-            id: usuario._id,
-            nombres: usuario.nombres,
-            email: usuario.email,
-            rol: usuario.rol
-        }
-    });
-
     
+
+    try {
+        const usuario = await Usuario.findOne({ email });
+
+        if (!usuario) {
+            return res.status(400).json({ msg: "Correo electrónico no encontrado" });
+        }
+
+        // Comparar la contraseña con el hash en la base de datos
+        const esContrasenaValida = await bcrypt.compare(password, usuario.password);
+
+        if (!esContrasenaValida) {
+            return res.status(401).json({ msg: "Contraseña incorrecta" });
+        }
+
+        res.status(200).json({
+            user: {
+                id: usuario._id,
+                nombres: usuario.nombres,
+                email: usuario.email,
+                rol: usuario.rol
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ msg: "Error en el servidor" });
+    }
 };
+
+
+
+
 const confirmar = async (req, res) =>{
     const { token } = req.params;
     console.log(token)
@@ -142,7 +150,56 @@ const nuevoPassword = async  (req,res) =>{
 
     }
 }
+const cambiarContraseña = async (req, res) => {
+    const { email, newPassword, confirmPassword } = req.body;
+
+    if (newPassword !== confirmPassword) {
+        return res.status(400).json({ msg: "Las contraseñas no coinciden" });
+    }
+
+    try {
+        const usuario = await Usuario.findOne({ email });
+
+        if (!usuario) {
+            return res.status(400).json({ msg: "Usuario no encontrado" });
+        }
+
+        // Actualizar directamente el campo password
+        usuario.password = newPassword; // No se hashea aquí porque el middleware lo hará
+        await usuario.save(); // Esto ejecutará el middleware pre("save")
+
+        res.status(200).json({ msg: "Contraseña cambiada exitosamente" });
+
+    } catch (error) {
+        res.status(500).json({ msg: "Error en el servidor" });
+    }
+};
+
+const validarUsuario = async (req, res) => {
+    const { email, nombre } = req.body;
+
+    try {
+        // Buscar al usuario por correo
+        const usuario = await Usuario.findOne({ email });
+
+        if (!usuario) {
+            return res.status(404).json({ msg: "Credenciales incorrectas" });
+        }
+
+        // Verificar que el nombre coincida
+        if (usuario.nombres !== nombre) {
+            return res.status(400).json({ msg: "Credenciales incorrectas" });
+        }
+
+        // Validación exitosa
+        res.status(200).json({ msg: "Usuario validado correctamente" });
+    } catch (error) {
+        res.status(500).json({ msg: "Error en el servidor" });
+    }
+};
 
 
-export {registrar, autenticar, confirmar, olvidePassword, comprobarToken, nuevoPassword}
 
+
+
+export {registrar, autenticar, confirmar, olvidePassword, comprobarToken, nuevoPassword, cambiarContraseña, validarUsuario}

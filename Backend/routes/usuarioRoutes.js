@@ -1,6 +1,7 @@
 // Backend/routes/usuariosRoutes.js
 import express from "express";
-import { autenticar, confirmar, registrar, olvidePassword, comprobarToken, nuevoPassword, obtenerUsuarioAutenticado } from "../controllers/usuarioController.js";
+import { cambiarContraseña } from "../controllers/usuarioController.js";
+import { autenticar, confirmar, registrar, olvidePassword, comprobarToken, nuevoPassword, obtenerUsuarioAutenticado, validarUsuario } from "../controllers/usuarioController.js";
 
 const router = express.Router();
 
@@ -10,6 +11,8 @@ router.post("/login", autenticar);
 router.get("/confirmar/:token", confirmar);
 router.post("/olvide-password", olvidePassword);
 router.route("/olvide-password/:token").get(comprobarToken).post(nuevoPassword);
+router.post("/cambiar-password", cambiarContraseña);
+router.post("/validar-usuario", validarUsuario); 
 
 // Obtener usuario autenticado
 router.get("/usuario", obtenerUsuarioAutenticado);

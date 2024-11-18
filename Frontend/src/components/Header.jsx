@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
 import logo from "../img/logo.png";
-import Users from "./Users";
 import { useUser } from "../context/UserContext";
 import UserDropdown from "./Dropdown";
 
