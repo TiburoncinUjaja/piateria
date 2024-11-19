@@ -3,6 +3,7 @@ import React from "react";
 const imgURL = "http://localhost:4000/uploads/images"
 
 const Modal = ({ producto, onClose }) => {
+
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
       <section className="bg-white md:py-10 px-10 rounded-md">
@@ -102,6 +103,16 @@ const Modal = ({ producto, onClose }) => {
                 </div>
               </div>
 
+              {producto.estado ? (
+                <button className="bg-green-500 text-white px-2 py-1 text-sm rounded mt-2">
+                  stock
+                </button>
+              ) : (
+                <button className="bg-red-500 text-white px-2 py-1 text-sm rounded mt-2">
+                  sin stock
+                </button>
+              )}
+
               <div className="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
                 <a
                   href="#"
@@ -162,30 +173,30 @@ const Modal = ({ producto, onClose }) => {
               <hr className="my-6 md:my-8 border-gray-200" />
               <strong>Categoría:</strong>
               <p className="text-gray-500">
-              {producto.categoria}
+                {producto.categoria}
               </p>
               <hr className="my-6 md:my-8 border-gray-200" />
               <strong>Descripción:</strong>
               <p className="mb-6 text-gray-500">
-              {producto.descripcion || "No disponible"}
+                {producto.descripcion || "No disponible"}
               </p>
-              
-              
-            </div>
-        </div>
-            <div className="flex justify-center pt-8 col-start-1 col-end-2">
-                <a
-                  href="#"
-                  title=""
-                  onClick={onClose}
-                  className="text-white w-fit mt-4 sm:mt-0 bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none flex items-center justify-center"
-                  role="button"
-                >
 
-                  Cerrar
-                </a>
-              </div>
+
+            </div>
           </div>
+          <div className="flex justify-center pt-8 col-start-1 col-end-2">
+            <a
+              href="#"
+              title=""
+              onClick={onClose}
+              className="text-white w-fit mt-4 sm:mt-0 bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none flex items-center justify-center"
+              role="button"
+            >
+
+              Cerrar
+            </a>
+          </div>
+        </div>
       </section>
     </div>
   );
