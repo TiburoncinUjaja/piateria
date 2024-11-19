@@ -14,10 +14,10 @@ const UserDropdown = ({ user, handleLogout }) => {
     setIsDropdownOpen(false); // Cerrar el dropdown después de navegar
   };
 
-  const editProfile = () => {
-    navigate('/edit-profile');
-    setIsDropdownOpen(false); // Cerrar el dropdown después de navegar
-  };
+  // const editProfile = () => {
+  //   navigate('/edit-profile');
+  //   setIsDropdownOpen(false); // Cerrar el dropdown después de navegar
+  // };
 
   return (
     <div className="relative">
@@ -32,7 +32,7 @@ const UserDropdown = ({ user, handleLogout }) => {
       {/* Dropdown menu que se despliega al hacer clic */}
       {isDropdownOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white border-2 border-Azul-oscuro rounded-lg shadow-lg">
-          
+
           {/* Opción "Admin" solo visible si el rol del usuario es "admin" */}
           {user.rol === 'admin' && (
             <button
@@ -43,12 +43,12 @@ const UserDropdown = ({ user, handleLogout }) => {
             </button>
           )}
 
-          <button
+          {/* <button
             onClick={editProfile}
             className="w-full text-left text-sm text-Azul-oscuro px-4 py-2 hover:bg-Beige"
           >
             Editar Perfil
-          </button>   
+          </button>    */}
 
           <button
             onClick={handleLogout}
