@@ -10,7 +10,8 @@ import { AboutUs } from "./pages/AboutUs";
 import Contact from "./pages/Contact";
 import PageAPI from "./pages/PageAPI";
 import { UserProvider } from "./context/UserContext";
-
+import RecuperarPass from "./pages/RecuperarPass";
+import validarUsuario from "./pages/RecuperarPass";
 
 
 function App() {
@@ -32,6 +33,9 @@ function App() {
             <Route path="/carrito" element={<Cart></Cart>}></Route>
             <Route path="/API" element={<PageAPI></PageAPI>}></Route>
             <Route path="*" element={<Navigate to="/" />}></Route>
+            <Route path="/recuperar-password" element={<RecuperarPass />} />
+            <Route path="/validar-usuario" element={<validarUsuario />} />
+            
           </Routes>
         </section>
       </div>
@@ -43,3 +47,4 @@ function App() {
 }
 
 export default App;
+

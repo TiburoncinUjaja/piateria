@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../context/UserContext'; // Importa el hook useUser
+import { useUser } from '../context/UserContext';
 
 const FormLogin = () => {
     const navigate = useNavigate();
-    const { setUser } = useUser(); // Obtiene setUser del contexto de usuario
+    const { setUser } = useUser();
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -22,6 +22,8 @@ const FormLogin = () => {
         e.preventDefault();
         const { email, password } = formData;
 
+        console.log("Formulario enviado con:", formData); // Log para ver los datos enviados
+
         try {
             const response = await fetch("http://localhost:4000/api/usuarios/login", {
                 method: "POST",
@@ -31,27 +33,34 @@ const FormLogin = () => {
                 body: JSON.stringify({ email, password })
             });
 
+            console.log("Respuesta del servidor:", response); // Log para ver la respuesta completa del servidor
+
             const data = await response.json();
-            console.log(data);
-            
+            console.log("Datos recibidos:", data); // Log para ver los datos del backend
+
             if (response.ok) {
                 const userData = {
                     email: data.user.email,
                     nombres: data.user.nombres,
                     rol: data.user.rol
                 };
-                setUser(userData); // Esto actualizará tanto el contexto como localStorage
-                navigate('/'); 
+                console.log("Usuario autenticado:", userData); // Log para ver los datos del usuario autenticado
+                setUser(userData);
+                navigate('/');
             } else {
-                setError(true); 
+                console.log("Error de autenticación: ", data); // Log para errores de autenticación
+                setError(true);
             }
-            
         } catch (error) {
-            console.error("Error en la solicitud:", error);
-            setError(true);  // Mostrar error si ocurre una excepción
+            console.error("Error en la solicitud:", error); // Log para capturar errores en la petición
+            setError(true);
         }
     };
 
+    const handleRecoverPassword = () => {
+        console.log("Redirigiendo a recuperar contraseña...");
+        navigate('/recuperar-password');
+    };
     return (
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0 w-1/2">
             <div className="w-full shadow-lg rounded-2xl p-6 inline-block bg-gray-100 h-full">
@@ -91,6 +100,15 @@ const FormLogin = () => {
                         >
                             Iniciar Sesión
                         </button>
+                        <div className="flex justify-end">
+                            <button
+                                type="button"
+                                onClick={handleRecoverPassword}
+                                className="text-Azul-oscuro text-sm font-medium hover:underline"
+                            >
+                                Recuperar contraseña
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
