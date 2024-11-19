@@ -62,6 +62,7 @@ const FlashcardAdmin = ({ searchTerm }) => {
     setShowModal2(true);
   };
 
+
   // Función para obtener los PQRs
   const fetchPqrs = async () => {
     try {

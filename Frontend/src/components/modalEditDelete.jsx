@@ -23,6 +23,36 @@ const Modal2 = ({ producto, onClose, fethProductos }) => {
         console.log("Estado seleccionado:", e.target.value);
     };
 
+    
+  const eliminarProducto = async (id) => {
+    const confirmacion = window.confirm(
+      "¿Estás seguro de que deseas eliminar este producto?"
+    );
+    if (!confirmacion) return;
+    try {
+      const response = await fetch(`http://localhost:4000/api/productos/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al eliminar el producto");
+      }
+
+      const data = await response.json();
+      console.log(data.message);
+
+      // Actualizar la lista de productos después de eliminar
+      fethProductos();
+      onClose();
+    } catch (error) {
+      console.error("Error al eliminar el producto:", error);
+      alert("Hubo un problema al intentar eliminar el producto.");
+    }
+  };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData();
@@ -214,6 +244,7 @@ const Modal2 = ({ producto, onClose, fethProductos }) => {
                         Cerrar
                     </button>
                     <button
+                        onClick={() => eliminarProducto(productId)}
                         className="bg-red-600 mb-10 text-white p-2 px-4 rounded-full hover:bg-Rojo duration-200 font-bold"
                     >
                         Eliminar
