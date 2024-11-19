@@ -55,10 +55,10 @@ const CarouselCategories = ({categoria, setCategoria}) => {
                                 <CategorySlide index={1} src={CategoriaNueo} name="Lo más reciente" changeCategory={changeCategory} categoria=""/>
                                 <CategorySlide index={2} src={CateogriaPiñata} name="Piñatas" changeCategory={changeCategory} categoria="piñatas"/>
                                 <CategorySlide index={3} src={CategoriaInflables} name="Inflables" changeCategory={changeCategory} categoria="inflables"/>
-                                <CategorySlide index={4} src={CategoriaJuguetes} name="Juguetes" changeCategory={changeCategory} categoria="Juguetes"/>
+                                <CategorySlide index={4} src={CategoriaJuguetes} name="Juguetes" changeCategory={changeCategory} categoria="juguetes"/>
                                 <CategorySlide index={5} src={CategoriaDecoraciones} name="Decoraciones" changeCategory={changeCategory} categoria="decoracion"/>
                                 <CategorySlide index={6} src={CategoriaVelas} name="Velas" changeCategory={changeCategory} categoria="velas"/>
-                                <CategorySlide index={7} src={CategoriaOtros} name="Otros" changeCategory={changeCategory} categoria="Otros"/>
+                                <CategorySlide index={7} src={CategoriaOtros} name="Otros" changeCategory={changeCategory} categoria="otros"/>
 
                                 </div>
                             </Slider>

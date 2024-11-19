@@ -110,7 +110,7 @@ const eliminarProducto = async (req, res) => {
         return res.status(400).json({ msg: error.message });
     }
     try {
-        await Producto.deleteOne();
+        await producto.deleteOne();
         res.json({msg: "Producto Eliminado"})
     } catch (error) {
         console.log(error);
