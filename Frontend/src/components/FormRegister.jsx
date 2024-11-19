@@ -57,7 +57,7 @@ const FormRegister = () => {
                 type="text"
                 name="nombres"
                 id="nombres"
-                value={formData.nombre}
+                value={formData.nombres}
                 onChange={handleChange}
                 className="bg-gray-50 border border-Azul-oscuro text-Azul-oscuro sm:text-sm rounded-lg block w-full p-2.5"
                 placeholder="nombre completo"

@@ -12,6 +12,7 @@ import PageAPI from "./pages/PageAPI";
 import { UserProvider } from "./context/UserContext";
 import RecuperarPass from "./pages/RecuperarPass";
 import validarUsuario from "./pages/RecuperarPass";
+import ResetPassword from "./pages/ResetPassword";
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" />}></Route>
             <Route path="/recuperar-password" element={<RecuperarPass />} />
             <Route path="/validar-usuario" element={<validarUsuario />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             
           </Routes>
         </section>

@@ -50,6 +50,32 @@ const RecuperarPass = () => {
         }
     };
 
+    const enviarCorreo = async (e) => {
+        e.preventDefault();
+        try {
+
+            const response = await fetch('http://localhost:4000/api/usuarios/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: formData.email
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setSuccessMessage('Email enviado correctamente.');
+            } else {
+                setErrorMessage(data.msg || 'Error al enviar el correo');
+            }
+        } catch (error) {
+
+        }
+    }
+
     // Cambiar contraseña
     const handleChangePassword = async (e) => {
         e.preventDefault();
@@ -89,14 +115,13 @@ const RecuperarPass = () => {
 
     return (
         <div className="flex flex-col items-center justify-center px-16 py-8 mx-auto py-4">
-            <div className="w-full shadow-lg rounded-2xl p-6 inline-block bg-gray-100 h-full">
+            <div className="w-2/3 shadow-lg rounded-2xl p-6 inline-block bg-gray-100 h-full">
                 <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                     <h1 className="text-3xl font-bold leading-tight tracking-tight text-Azul-oscuro text-center">
                         Recuperar Contraseña
                     </h1>
-                    {!isVerified ? (
-                        // Formulario para validar correo y nombre
-                        <form className="space-y-4 md:space-y-6" onSubmit={handleVerifyUser}>
+                        
+                        <form className="space-y-4 md:space-y-6" onSubmit={enviarCorreo}>
                             <div>
                                 <label htmlFor="email" className="block mb-2 text-sm font-semibold text-Azul-oscuro">
                                     Correo:
@@ -112,73 +137,15 @@ const RecuperarPass = () => {
                                     required
                                 />
                             </div>
-                            <div>
-                                <label htmlFor="nombre" className="block mb-2 text-sm font-semibold text-Azul-oscuro">
-                                    Nombre:
-                                </label>
-                                <input
-                                    type="text"
-                                    name="nombre"
-                                    id="nombre"
-                                    onChange={handleChange}
-                                    value={formData.nombre}
-                                    className="bg-gray-50 border border-Azul-oscuro text-Azul-oscuro sm:text-sm rounded-lg block w-full p-2.5"
-                                    placeholder="Tu nombre completo"
-                                    required
-                                />
-                            </div>
                             <button
                                 type="submit"
                                 className="w-full text-white bg-Azul-oscuro font-semibold rounded-lg text-sm px-5 py-2.5 hover:text-Azul-oscuro hover:bg-Beige hover:border-Azul-oscuro border-2 text-center"
                             >
-                                Verificar Usuario
+                                Enviar correo
                             </button>
                             {errorMessage && <p className="text-red-600 text-sm text-center mt-2">{errorMessage}</p>}
                             {successMessage && <p className="text-green-600 text-sm text-center mt-2">{successMessage}</p>}
                         </form>
-                    ) : (
-                        // Formulario para cambiar contraseña
-                        <form className="space-y-4 md:space-y-6" onSubmit={handleChangePassword}>
-                            <div>
-                                <label htmlFor="newPassword" className="block mb-2 text-sm font-semibold text-Azul-oscuro">
-                                    Nueva contraseña:
-                                </label>
-                                <input
-                                    type="password"
-                                    name="newPassword"
-                                    id="newPassword"
-                                    onChange={handleChange}
-                                    value={formData.newPassword}
-                                    className="bg-gray-50 border border-Azul-oscuro text-Azul-oscuro sm:text-sm rounded-lg block w-full p-2.5"
-                                    placeholder="••••••••"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="confirmPassword" className="block mb-2 text-sm font-semibold text-Azul-oscuro">
-                                    Confirmar nueva contraseña:
-                                </label>
-                                <input
-                                    type="password"
-                                    name="confirmPassword"
-                                    id="confirmPassword"
-                                    onChange={handleChange}
-                                    value={formData.confirmPassword}
-                                    className="bg-gray-50 border border-Azul-oscuro text-Azul-oscuro sm:text-sm rounded-lg block w-full p-2.5"
-                                    placeholder="••••••••"
-                                    required
-                                />
-                            </div>
-                            <button
-                                type="submit"
-                                className="w-full text-white bg-Azul-oscuro font-semibold rounded-lg text-sm px-5 py-2.5 hover:text-Azul-oscuro hover:bg-Beige hover:border-Azul-oscuro border-2 text-center"
-                            >
-                                Cambiar Contraseña
-                            </button>
-                            {errorMessage && <p className="text-red-600 text-sm text-center mt-2">{errorMessage}</p>}
-                            {successMessage && <p className="text-green-600 text-sm text-center mt-2">{successMessage}</p>}
-                        </form>
-                    )}
                 </div>
             </div>
         </div>
