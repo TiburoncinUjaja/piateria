@@ -30,7 +30,7 @@ const productoSchema = mongoose.Schema({
     },
     estado: {
         type: Boolean,
-        default: true
+        // default: true
     },
 
     

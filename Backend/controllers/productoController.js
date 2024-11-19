@@ -85,13 +85,14 @@ const editarProducto = async (req, res) => {
         const error = new Error("Prducto no encontrado");
         return res.status(400).json({ msg: error.message });
     }
+    console.log(req.body.estado);
     producto.codigo = req.body.codigo || producto.codigo;
     producto.nombre = req.body.nombre || producto.nombre;
     producto.descripcion = req.body.descripcion || producto.descripcion;
     producto.precio = req.body.precio || producto.precio;
     producto.categoria = req.body.categoria || producto.categoria;
     producto.imagen = req.body.imagen || producto.imagen;
-    producto.estado = req.body.estado || producto.estado;
+    producto.estado = req.body.estado;
 
     try {
         const productoAlmacenado = await producto.save();

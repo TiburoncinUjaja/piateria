@@ -65,8 +65,9 @@ const Modal2 = ({ producto, onClose, fethProductos }) => {
         const productoData = {
             "codigo": productCode, "nombre": productName,
             "descripcion": productDescription, "categoria": productCategory,
-            "precio": productPrice, "estado": productState === 'activo'
+            "precio": productPrice, "estado": productState === "activo"
         };
+        console.log(productoData)
 
         try {
             if (productImage) {
@@ -215,6 +216,7 @@ const Modal2 = ({ producto, onClose, fethProductos }) => {
                                     <option value="inflables">Inflables</option>
                                     <option value="juguetes">Juguetes</option>
                                     <option value="decoracion">Decoración</option>
+                                    <option value="velas">Velas</option>
                                     <option value="otros">Otros</option>
                                 </select>
                             </div>
